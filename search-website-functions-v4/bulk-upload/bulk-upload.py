@@ -160,9 +160,7 @@ if __name__ == "__main__":
     start_client = CreateClient(endpoint, key, index_name)
     admin_client = start_client.create_admin_client()
     search_client = start_client.create_search_client()
-    schema = create_schema_from_json_and_upload(
-        index_schema, index_name, admin_client, url=False
-    )
+    create_schema_from_json_and_upload(index_schema, index_name, admin_client, url=False)
     books_data = convert_csv_to_json(books_url)
-    batch_upload = batch_upload_json_data_to_index(books_data, search_client)
+    batch_upload_json_data_to_index(books_data, search_client)
     print("Upload complete")

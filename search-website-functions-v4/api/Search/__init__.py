@@ -20,15 +20,15 @@ search_client = SearchClient(endpoint, index_name, AzureKeyCredential(key))
 
 
 # returns obj like {authors: 'array', language_code:'string'}
-def read_facets(facetsString):
-    facets = facetsString.split(",")
+def read_facets(facets_string):
+    facets = facets_string.split(",")
     output = {}
-    for x in facets:
-        if x.find("*") != -1:
-            newVal = x.replace("*", "")
-            output[newVal] = "array"
+    for facet in facets:
+        if facet.find("*") != -1:
+            new_val = facet.replace("*", "")
+            output[new_val] = "array"
         else:
-            output[x] = "string"
+            output[facet] = "string"
 
     return output
 
@@ -58,7 +58,7 @@ def create_filter_expression(filter_list, facets):
     return return_string
 
 
-def new_shape(docs):
+def shape_results(docs):
 
     old_api_shape = list(docs)
 
@@ -106,41 +106,39 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     # variables sent in body
     req_body = req.get_json()
-    q = req_body.get("q")
+    query = req_body.get("q")
     top = req_body.get("top") or 8
     skip = req_body.get("skip") or 0
     filters = req_body.get("filters") or []
 
     facets = environment_vars["search_facets"]
-    facetKeys = read_facets(facets)
+    facet_keys = read_facets(facets)
 
-    filter = ""
+    filter_exp = ""
     if len(filters):
-        filter = create_filter_expression(filters, facetKeys)
+        filter_exp = create_filter_expression(filters, facet_keys)
 
-    if q:
-        logging.info(f"/Search q = {q}")
+    if query:
+        logging.info("/Search q = %s", query)
 
         search_results = search_client.search(
-            search_text=q,
+            search_text=query,
             top=top,
             skip=skip,
-            facets=facetKeys,
-            filter=filter,
+            facets=facet_keys,
+            filter=filter_exp,
             include_total_count=True,
         )
-
-        returned_docs = new_shape(search_results)
 
         # format the React app expects
         full_response = {}
 
         full_response["count"] = search_results.get_count()
         full_response["facets"] = search_results.get_facets()
-        full_response["results"] = returned_docs
+        full_response["results"] = shape_results(search_results)
 
         return func.HttpResponse(
             body=json.dumps(full_response), mimetype="application/json", status_code=200
         )
-    else:
-        return func.HttpResponse("No query param found.", status_code=200)
+
+    return func.HttpResponse("No query param found.", status_code=200)

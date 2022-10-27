@@ -25,14 +25,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     docid = req.params.get("id")
 
     if docid:
-        logging.info(f"/Lookup id = {docid}")
-        returnedDocument = search_client.get_document(key=docid)
+        logging.info("/Lookup id = %s", docid)
+        returned_document = search_client.get_document(key=docid)
 
         full_response = {}
-        full_response["document"] = returnedDocument
+        full_response["document"] = returned_document
 
         return func.HttpResponse(
             body=json.dumps(full_response), mimetype="application/json", status_code=200
         )
-    else:
-        return func.HttpResponse("No doc id param found.", status_code=200)
+
+    return func.HttpResponse("No doc id param found.", status_code=200)

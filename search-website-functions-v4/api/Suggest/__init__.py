@@ -29,13 +29,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     # variables sent in body
     req_body = req.get_json()
-    q = req_body.get("q")
+    query = req_body.get("q")
     top = req_body.get("top", 5)
     suggester = req_body.get("suggester", "sg")
 
-    if q:
-        logging.info(f"/Suggest q = {q}")
-        suggestions = search_client.suggest(search_text=q, suggester_name=suggester, top=top)
+    if query:
+        logging.info("/Suggest q = %s", query)
+        suggestions = search_client.suggest(search_text=query, suggester_name=suggester, top=top)
 
         # format the React app expects
         full_response = {}
@@ -45,5 +45,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(
             body=json.dumps(full_response), mimetype="application/json", status_code=200
         )
-    else:
-        return func.HttpResponse("No query param found.", status_code=200)
+
+    return func.HttpResponse("No query param found.", status_code=200)
