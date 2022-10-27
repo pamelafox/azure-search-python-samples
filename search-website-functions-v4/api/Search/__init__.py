@@ -18,6 +18,7 @@ index_name = "good-books"
 # Create Azure SDK client
 search_client = SearchClient(endpoint, index_name, AzureKeyCredential(key))
 
+
 # returns obj like {authors: 'array', language_code:'string'}
 def read_facets(facetsString):
     facets = facetsString.split(",")
@@ -61,7 +62,6 @@ def new_shape(docs):
 
     old_api_shape = list(docs)
 
-    count = 0
     client_side_expected_shape = []
 
     for item in old_api_shape:
@@ -131,8 +131,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
         returned_docs = new_shape(search_results)
-        returned_count = search_results.get_count()
-        returned_facets = search_results.get_facets()
 
         # format the React app expects
         full_response = {}

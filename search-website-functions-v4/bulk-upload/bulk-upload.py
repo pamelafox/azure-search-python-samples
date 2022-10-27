@@ -1,5 +1,4 @@
 import json
-import sys
 
 import pandas as pd
 import requests
@@ -7,13 +6,8 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
 from azure.search.documents.indexes.models import (
-    ComplexField,
     CorsOptions,
-    ScoringProfile,
-    SearchableField,
-    SearchFieldDataType,
-    SearchIndex,
-    SimpleField,
+    SearchIndex
 )
 
 # Get the service name (short name) and admin API key from the environment
@@ -33,6 +27,8 @@ books_url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/master/boo
 batch_size = 1000
 
 # Instantiate a client
+
+
 class CreateClient(object):
     def __init__(self, endpoint, key, index_name):
         self.endpoint = endpoint
@@ -89,8 +85,8 @@ def create_schema_from_json_and_upload(schema, index_name, admin_client, url=Fal
             print(f"Schema uploaded; Index created for {index_name}.")
         else:
             exit(0)
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
+    except Exception as exc:
+        print("Unexpected error:", exc)
 
 
 # Convert CSV data to JSON
