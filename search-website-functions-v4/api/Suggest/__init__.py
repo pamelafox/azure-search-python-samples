@@ -1,9 +1,10 @@
+import json
 import logging
+
 import azure.functions as func
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from shared_code import azure_config
-import json
 
 environment_vars = azure_config()
 

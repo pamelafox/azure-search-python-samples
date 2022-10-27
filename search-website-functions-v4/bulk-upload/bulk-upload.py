@@ -1,19 +1,19 @@
-import sys
 import json
-import requests
+import sys
+
 import pandas as pd
+import requests
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
-from azure.search.documents.indexes.models import SearchIndex
 from azure.search.documents.indexes.models import (
     ComplexField,
     CorsOptions,
-    SearchIndex,
     ScoringProfile,
-    SearchFieldDataType,
-    SimpleField,
     SearchableField,
+    SearchFieldDataType,
+    SearchIndex,
+    SimpleField,
 )
 
 # Get the service name (short name) and admin API key from the environment
