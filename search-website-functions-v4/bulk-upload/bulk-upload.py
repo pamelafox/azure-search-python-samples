@@ -24,7 +24,7 @@ index_schema = "./good-books-index.json"
 
 # Books catalog
 books_url = "https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/master/books.csv"
-batch_size = 1000
+BATCH_SIZE = 1000
 
 # Instantiate a client
 
@@ -68,7 +68,7 @@ def get_schema_data(schema, url=False):
 def create_schema_from_json_and_upload(schema, index_name, admin_client, url=False):
 
     cors_options = CorsOptions(allowed_origins=["*"], max_age_in_seconds=60)
-    scoring_profiles = []
+    scoring_profiles = ()
     schema_data = get_schema_data(schema, url)
 
     index = SearchIndex(
@@ -97,7 +97,7 @@ def convert_csv_to_json(url):
 
 
 # Batch your uploads to Azure Search
-def batch_upload_json_data_to_index(json_file, client):
+def batch_upload_json_data_to_index(json_file, client, batch_size):
     batch_array = []
     count = 0
     batch_counter = 0
@@ -162,5 +162,5 @@ if __name__ == "__main__":
     search_client = start_client.create_search_client()
     create_schema_from_json_and_upload(index_schema, index_name, admin_client, url=False)
     books_data = convert_csv_to_json(books_url)
-    batch_upload_json_data_to_index(books_data, search_client)
+    batch_upload_json_data_to_index(books_data, search_client, BATCH_SIZE)
     print("Upload complete")
